@@ -1,43 +1,27 @@
 import React from "react";
 import { connect } from "react-redux";
-import { simpleActionOne, simpleActionTwo } from "./actions/simpleAction";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import About from "./components/About";
+import Contact from "./components/Contact";
+import Card from "./components/Card";
 
 const App = (props) => {
-  const simpleAction = (val) => {
-    switch (val) {
-      case "ONE":
-        props.simpleOne();
-        break;
-      case "TWO":
-        props.simpleTwo();
-        break;
-      default:
-        break;
-    }
-  };
-
   return (
     <div>
-      <button onClick={() => simpleAction("ONE")}>
-        CLICK to view the First Action
-      </button>
-
-      <br />
-      <button onClick={() => simpleAction("TWO")}>
-        CLICK to view the Second Action
-      </button>
-      <div>
-        <pre>{JSON.stringify(props)}</pre>
-      </div>
+      <BrowserRouter>
+        <Navbar />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/about" component={About} />
+          <Route path="/contact" component={Contact} />
+          <Route path="/card/:user" component={Card} />
+        </Switch>
+      </BrowserRouter>
     </div>
   );
 };
 
-const mapStateToProps = (state) => ({ ...state });
-
-const mapDispatchToProps = (dispatch) => ({
-  simpleOne: () => dispatch(simpleActionOne()),
-  simpleTwo: () => dispatch(simpleActionTwo()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect()(App);
