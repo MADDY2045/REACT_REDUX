@@ -1,16 +1,31 @@
 import React from "react";
 import { connect } from "react-redux";
-import { simpleAction } from "./actions/simpleAction";
+import { simpleActionOne, simpleActionTwo } from "./actions/simpleAction";
 
 const App = (props) => {
-  const simpleAction = () => {
-    props.simpleOne();
+  const simpleAction = (val) => {
+    switch (val) {
+      case "ONE":
+        props.simpleOne();
+        break;
+      case "TWO":
+        props.simpleTwo();
+        break;
+      default:
+        break;
+    }
   };
 
   return (
     <div>
-      <button onClick={simpleAction}>CLICK to view the Action</button>
+      <button onClick={() => simpleAction("ONE")}>
+        CLICK to view the First Action
+      </button>
+
       <br />
+      <button onClick={() => simpleAction("TWO")}>
+        CLICK to view the Second Action
+      </button>
       <div>
         <pre>{JSON.stringify(props)}</pre>
       </div>
@@ -21,7 +36,8 @@ const App = (props) => {
 const mapStateToProps = (state) => ({ ...state });
 
 const mapDispatchToProps = (dispatch) => ({
-  simpleOne: () => dispatch(simpleAction()),
+  simpleOne: () => dispatch(simpleActionOne()),
+  simpleTwo: () => dispatch(simpleActionTwo()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
