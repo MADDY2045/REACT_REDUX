@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { images } from "../helpers/images";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
-const Contact = ({ cards }) => {
+const Contact = () => {
   useEffect(() => {
     console.log(images);
   }, []);
+
+  const { cards } = useSelector((state) => state.userFetchReducer);
 
   return (
     <div>
@@ -38,12 +40,12 @@ const Contact = ({ cards }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  console.log(state);
-  const { cards } = state.userFetchReducer;
-  return {
-    cards: cards,
-  };
-};
+// const mapStateToProps = (state) => {
+//   console.log(state);
+//   const { cards } = state.userFetchReducer;
+//   return {
+//     cards: cards,
+//   };
+// };
 
-export default connect(mapStateToProps)(Contact);
+export default connect()(Contact);
