@@ -11,6 +11,7 @@ module.exports = {
   mode: "development",
   devServer: {
     port: 3000,
+    historyApiFallback: true, //to resolve the cannot Get error while refreshing
   },
   output: {
     path: path.resolve(__dirname, "dist"), //we tell webpack to create the final bundled file in dist folder
