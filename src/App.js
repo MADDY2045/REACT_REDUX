@@ -1,16 +1,23 @@
 import React from "react";
-import useFetch from "./useFetch";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./pages/Layout";
+import Home from "./pages/Home";
+import Blogs from "./pages/Blog";
+import Contact from "./pages/Contact";
+import NoPage from "./pages/NotFound";
 
 const App = () => {
-  const [data] = useFetch("https://jsonplaceholder.typicode.com/todos");
-
   return (
-    <>
-      {data &&
-        data.map((item) => {
-          return <p key={item.id}>{item.title}</p>;
-        })}
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="blogs" element={<Blogs />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="*" element={<NoPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 };
 
