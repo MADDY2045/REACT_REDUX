@@ -1,41 +1,27 @@
-import React, { useEffect, useState, useRef } from "react";
-
+import React, { useCallback, useState } from "react";
+import Todos from "./Todos";
 const App = () => {
-  const [inputValue, setInputValue] = useState("");
-  const count = useRef(0); // Use case 1 to explain useRef does not cause re-renders
+  const [count, setCount] = useState(0);
+  const [todos, setTodos] = useState([]);
 
-  const inputElement = useRef(); //use case 2 to explain useRef directly accesses DOM in React without issues
-  const previousInputValue = useRef("");
+  const incrementCount = () => setCount((prevCount) => prevCount + 1);
 
-  useEffect(() => {
-    count.current += 1;
-  });
+  /*without using useCallback will cause rerender in todos 
+  component even if increment counter is clicked in parent */
+  // const addTodo = () => setTodos([...todos, "New Todo"]);
 
-  useEffect(() => {
-    previousInputValue.current = inputValue;
-  }, [inputValue]);
+  const addTodo = useCallback(() => {
+    setTodos([...todos, "NEW TODO"]);
+  }, [todos]);
 
   return (
     <div>
-      <input
-        ref={inputElement}
-        className="form-control"
-        type="text"
-        onChange={(e) => setInputValue(e.target.value)}
-        value={inputValue}
-      />
-      <br />
-      {"RENDERED  " + count.current + "  TIMES"}
+      <Todos todos={todos} addTodo={addTodo} />
       <hr />
-      <button
-        className="btn btn-primary"
-        onClick={() => inputElement.current.focus()}
-      >
-        CLICK TO FOCUS
+      <h1>COUNT NOW:{count}</h1>
+      <button className="btn btn-secondary" onClick={incrementCount}>
+        INCREMENT COUNTER
       </button>
-      <hr />
-      <h1>CURRENT STATE VALUE:{inputValue}</h1>
-      <h1>PREVIOS STATE VALUE:{previousInputValue.current}</h1>
     </div>
   );
 };
