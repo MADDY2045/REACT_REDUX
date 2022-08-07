@@ -1,29 +1,53 @@
-import React, { useCallback, useState } from "react";
-import Todos from "./Todos";
+import React, { useState, useMemo } from "react";
+
 const App = () => {
   const [count, setCount] = useState(0);
   const [todos, setTodos] = useState([]);
 
-  const incrementCount = () => setCount((prevCount) => prevCount + 1);
+  /* Function without useMemo will rerender even when todo function is called */
+  // const calculation = expensiveCalculation(count);
 
-  /*without using useCallback will cause rerender in todos 
-  component even if increment counter is clicked in parent */
-  // const addTodo = () => setTodos([...todos, "New Todo"]);
+  const calculation = useMemo(() => {
+    return expensiveCalculation(count);
+  }, [count]);
 
-  const addTodo = useCallback(() => {
-    setTodos([...todos, "NEW TODO"]);
-  }, [todos]);
+  const increment = () => {
+    setCount((c) => c + 1);
+  };
+  const addTodo = () => {
+    setTodos((t) => [...t, "New Todo"]);
+  };
 
   return (
     <div>
-      <Todos todos={todos} addTodo={addTodo} />
+      <div>
+        <h2>My Todos</h2>
+        {todos.map((todo, index) => {
+          return <p key={index}>{todo}</p>;
+        })}
+        <button className="btn btn-primary" onClick={addTodo}>
+          Add Todo
+        </button>
+      </div>
       <hr />
-      <h1>COUNT NOW:{count}</h1>
-      <button className="btn btn-secondary" onClick={incrementCount}>
-        INCREMENT COUNTER
-      </button>
+      <div>
+        Count: {count}
+        <button className="btn btn-warning" onClick={increment}>
+          +
+        </button>
+        <h2>Expensive Calculation</h2>
+        {calculation}
+      </div>
     </div>
   );
+};
+
+const expensiveCalculation = (num) => {
+  console.log("Calculating...");
+  for (let i = 0; i < 1000000000; i++) {
+    num += 1;
+  }
+  return num;
 };
 
 export default App;
