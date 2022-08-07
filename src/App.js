@@ -1,27 +1,43 @@
-import React from "react";
-import { connect } from "react-redux";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
 
-import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import About from "./components/About";
-import Contact from "./components/Contact";
-import Card from "./components/Card";
+const App = () => {
+  const [inputValue, setInputValue] = useState("");
+  const count = useRef(0); // Use case 1 to explain useRef does not cause re-renders
 
-const App = (props) => {
+  const inputElement = useRef(); //use case 2 to explain useRef directly accesses DOM in React without issues
+  const previousInputValue = useRef("");
+
+  useEffect(() => {
+    count.current += 1;
+  });
+
+  useEffect(() => {
+    previousInputValue.current = inputValue;
+  }, [inputValue]);
+
   return (
     <div>
-      <BrowserRouter>
-        <Navbar />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/card/:user" component={Card} />
-        </Switch>
-      </BrowserRouter>
+      <input
+        ref={inputElement}
+        className="form-control"
+        type="text"
+        onChange={(e) => setInputValue(e.target.value)}
+        value={inputValue}
+      />
+      <br />
+      {"RENDERED  " + count.current + "  TIMES"}
+      <hr />
+      <button
+        className="btn btn-primary"
+        onClick={() => inputElement.current.focus()}
+      >
+        CLICK TO FOCUS
+      </button>
+      <hr />
+      <h1>CURRENT STATE VALUE:{inputValue}</h1>
+      <h1>PREVIOS STATE VALUE:{previousInputValue.current}</h1>
     </div>
   );
 };
 
-export default connect()(App);
+export default App;
