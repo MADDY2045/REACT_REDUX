@@ -1,48 +1,27 @@
-import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./pages/Layout";
-import Home from "./pages/Home";
-import Blogs from "./pages/Blog";
-import Contact from "./pages/Contact";
-import Profile from "./pages/Profile";
-import NoPage from "./pages/NotFound";
-import Protected from "./pages/Protected";
+import React, { useEffect, useState } from "react";
+import Todos from "./components/Todos";
+import WithLoading from "./HOC/withLoading";
+const TodosWithLoading = WithLoading(Todos);
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [repoState, setRepoState] = useState({});
 
-  const login = () => setIsLoggedIn((prevState) => !prevState);
+  useEffect(() => {
+    setRepoState({ ...repoState, isLoading: true });
+    fetch(`https://api.github.com/users/MADDY2045/repos`)
+      .then((json) => json.json())
+      .then((repos) => {
+        setRepoState({ ...repoState, isLoading: false, repos: repos });
+      });
+  }, []);
 
   return (
-    <BrowserRouter>
-      <div>
-        {!isLoggedIn ? (
-          <button className="btn btn-primary" onClick={login}>
-            LOG IN
-          </button>
-        ) : (
-          <button className="btn btn-outline-secondary" onClick={login}>
-            LOG OUT
-          </button>
-        )}
-      </div>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="blogs" element={<Blogs />} />
-          <Route path="contact" element={<Contact />} />
-          <Route
-            path="profile"
-            element={
-              <Protected isLoggedIn={isLoggedIn}>
-                <Profile />
-              </Protected>
-            }
-          />
-          <Route path="*" element={<NoPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <div>
+      <TodosWithLoading
+        isLoading={repoState.isLoading}
+        repos={repoState.repos}
+      />
+    </div>
   );
 };
 
