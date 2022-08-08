@@ -1,13 +1,39 @@
-import React, { useEffect, useState } from "react";
-import SimpleComponent from "./components/SimpleComponent";
-import HelloStyle from "./HOC/HelloStyle";
-const EnhancedHello = HelloStyle(SimpleComponent);
+import React from "react";
+import axios from "axios";
 
 const App = () => {
+  let cancelToken;
+  const handleSearchChange = async (e) => {
+    const searchTerm = e.target.value;
+
+    //Check if there are any previous pending requests
+    if (typeof cancelToken != typeof undefined) {
+      cancelToken.cancel("Operation canceled due to new request.");
+    }
+
+    //Save the cancel token for the current request
+    cancelToken = axios.CancelToken.source();
+
+    try {
+      const results = await axios.get(
+        `http://localhost:4000/animals?q=${searchTerm}`,
+        { cancelToken: cancelToken.token } //Pass the cancel token to the current request
+      );
+      console.log("Results for " + searchTerm + ": ", results.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div>
-      <EnhancedHello color={"red"} name="World" />
-      <EnhancedHello color={"green"} name="Maddy" />
+    <div style={{ marginTop: "3em", textAlign: "center" }}>
+      <input
+        className="form-control"
+        style={{ width: "60%", height: "1.5rem" }}
+        type="text"
+        placeholder="Search"
+        onChange={handleSearchChange}
+      />
     </div>
   );
 };
