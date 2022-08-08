@@ -1,26 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Todos from "./components/Todos";
-import WithLoading from "./HOC/withLoading";
-const TodosWithLoading = WithLoading(Todos);
+import SimpleComponent from "./components/SimpleComponent";
+import HelloStyle from "./HOC/HelloStyle";
+const EnhancedHello = HelloStyle(SimpleComponent);
 
 const App = () => {
-  const [repoState, setRepoState] = useState({});
-
-  useEffect(() => {
-    setRepoState({ ...repoState, isLoading: true });
-    fetch(`https://api.github.com/users/MADDY2045/repos`)
-      .then((json) => json.json())
-      .then((repos) => {
-        setRepoState({ ...repoState, isLoading: false, repos: repos });
-      });
-  }, []);
-
   return (
     <div>
-      <TodosWithLoading
-        isLoading={repoState.isLoading}
-        repos={repoState.repos}
-      />
+      <EnhancedHello color={"red"} name="World" />
+      <EnhancedHello color={"green"} name="Maddy" />
     </div>
   );
 };
